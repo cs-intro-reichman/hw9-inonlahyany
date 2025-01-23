@@ -140,6 +140,10 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
+		if (this.first == null) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
 		return getNode(index).block;
 	}	
 
@@ -170,6 +174,7 @@ public class LinkedList {
 		if (first == node) {
 			first = first.next;
 			if (first == null) last = first;
+			size--;
 		}
 
 		for (int i = 1; i < size; i++) {

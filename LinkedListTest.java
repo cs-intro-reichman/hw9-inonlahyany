@@ -27,7 +27,6 @@ public class LinkedListTest {
 		
 		// Frees a few memory blocks:
 		for (int i = 0; i < addresses.length; i += 2) {
-			System.out.println(addresses[i]);
 			m.free(addresses[i]);
 		}
 		System.out.println(m + "\n");
@@ -37,9 +36,14 @@ public class LinkedListTest {
 
 		// Frees some more memory and defrags (IGNORE THIS TESTING SECTION FOR NOW)
 		m.free(addresses[1]);
+		System.out.println(m);
 		m.free(addresses[3]);
+		System.out.println(m);
 		m.defrag();
 		System.out.println(m);
+		// m.defrag();
+		// System.out.println(m);
+
 		//// expected output:
 		//// (959 , 41) (0 , 269) (348 , 50) (407 , 1) (452 , 3) (534 , 68) (698 , 1) (767 , 42) (918 , 32) 
 		//// (269 , 79) (398 , 9) (408 , 44) (455 , 79) (602 , 96) (699 , 68) (809 , 109) (950 , 9) 

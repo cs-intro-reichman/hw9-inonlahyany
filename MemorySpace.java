@@ -1,3 +1,5 @@
+import java.awt.List;
+
 /**
  * Represents a managed memory space. The memory space manages a list of allocated 
  * memory blocks, and a list free memory blocks. The methods "malloc" and "free" are 
@@ -58,7 +60,23 @@ public class MemorySpace {
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
 	public int malloc(int length) {		
-		//// Replace the following statement with your code
+		ListIterator free = freeList.iterator();
+		while (free.hasNext()) {
+			MemoryBlock currentBlock = free.current.block;
+			if (currentBlock.length == length) {
+				allocatedList.addLast(currentBlock);
+				freeList.remove(currentBlock);
+				return currentBlock.baseAddress;
+			}
+			if (currentBlock.length > length) {
+				allocatedList.addLast(new MemoryBlock(free.current.block.baseAddress, length));
+				currentBlock.length -= length;
+				currentBlock.baseAddress += length;
+				return currentBlock.baseAddress;
+			}
+			free.next();
+		}
+
 		return -1;
 	}
 
@@ -71,7 +89,15 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		//// Write your code here
+		ListIterator allocated = allocatedList.iterator();
+		while (allocated.hasNext()) {
+			MemoryBlock currentBlock = allocated.current.block;
+			if (currentBlock.baseAddress == address) {
+				freeList.addLast(currentBlock);
+				allocatedList.remove(currentBlock);
+			}
+			allocated.next();
+		}
 	}
 	
 	/**
@@ -88,7 +114,18 @@ public class MemorySpace {
 	 * In this implementation Malloc does not call defrag.
 	 */
 	public void defrag() {
-		/// TODO: Implement defrag test
-		//// Write your code here
+		ListIterator freeOuter = freeList.iterator();
+		while (freeOuter.hasNext()) {
+			MemoryBlock currentBlock = freeOuter.next();
+			ListIterator freeInner = freeList.iterator();
+			while (freeInner.hasNext()) {
+				MemoryBlock candidateBlock = freeInner.next();
+				if (currentBlock.baseAddress + currentBlock.length == candidateBlock.baseAddress) {
+					currentBlock.length += candidateBlock.length;
+					freeList.remove(candidateBlock);
+				}
+				System.out.println("");
+			}
+		}
 	}
 }

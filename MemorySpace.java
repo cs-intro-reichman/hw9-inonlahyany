@@ -116,19 +116,26 @@ public class MemorySpace {
 	 * Normally, called by malloc, when it fails to find a memory block of the requested size.
 	 * In this implementation Malloc does not call defrag.
 	 */
+	
 	public void defrag() {
-		ListIterator freeOuter = freeList.iterator();
-		while (freeOuter.hasNext()) {
-			MemoryBlock currentBlock = freeOuter.next();
-			ListIterator freeInner = freeList.iterator();
-			while (freeInner.hasNext()) {
-				MemoryBlock candidateBlock = freeInner.next();
-				if (currentBlock.baseAddress + currentBlock.length == candidateBlock.baseAddress) {
-					currentBlock.length += candidateBlock.length;
-					freeList.remove(candidateBlock);
+		boolean merged;
+		do {
+			merged = false;
+			ListIterator freeOuter = freeList.iterator();
+			while (freeOuter.hasNext()) {
+				MemoryBlock currentBlock = freeOuter.next();
+				ListIterator freeInner = freeList.iterator();
+				while (freeInner.hasNext()) {
+					MemoryBlock candidateBlock = freeInner.next();
+					if (currentBlock != candidateBlock &&
+						currentBlock.baseAddress + currentBlock.length == candidateBlock.baseAddress) {
+						currentBlock.length += candidateBlock.length;
+						freeList.remove(candidateBlock);
+						merged = true;
+					}
 				}
 			}
-		}
+		} while (merged);
 	}
 }
 
